@@ -1,0 +1,275 @@
+web_server: yes
+
+schedules:
+  - tasks: '*'
+    interval:
+      hours: 12
+templates:
+
+  TV_Series:
+    discover:
+      what:
+        - sonarr_list:
+            base_url: http://192.168.1.181
+            port: 8989
+            api_key: ########
+            include_ended: no
+
+        - next_series_episodes:
+            from_start: yes
+            backfill: yes
+      from:
+        - piratebay:
+            category: video
+            sort_by: seeds
+            #url: https://thepiratebay.org
+#        - rarbg:
+#            category: [41, 18]
+#            sorted_by: leechers
+#            min_seeders: 10
+        - iptorrents:
+            rss_key: #######
+            uid: #######
+            password: ######
+            category:
+              - TV-DVD-Rip
+              - TV-Web-DL
+              - TV-x264
+              - TV-SD-x264
+              - TV-x265
+
+
+    include: "Current.yml"
+  ##Becomes existing series path (Seagate)
+    exists_series: /downloads/{{series_name}}
+
+###### Code I stole from someone in reddit that doesn't work fully
+    content_filter:
+      require: [ '*.avi', '*.m4v', '*.mkv', '*.mp4' ]
+      reject:
+        - '*.rar' # mostly fakes but too lazy to unrar
+#        - '*.exe' # fakes with "codec packs"
+#        - '*.nfo' # fakes/or shit I don't want to deal with
+#        - 'info.txt'       # fakes/or shit I don't want to deal with
+#        - '*.lnk' # fakes/shit
+
+#    magnets: no
+    convert_magnet:
+      force: yes
+      timeout: 15 minutes
+
+
+
+    verify_ssl_certificates: no
+
+    content_size:
+      min: 40
+      max: 30000
+      strict: no
+
+  ##Where is it downloading?
+    assume_quality:
+      hdtv: 720p
+      webrip: 720p
+
+  ## .torrent file location
+    download:
+      path: /downloads/torrents/{{series_name}}/
+
+    domain_delay:
+      kat.ph: 10 seconds
+      rarbag.to: 10 seconds
+      iptorrents.com: 8 seconds
+
+#TORRENT DOWNLOADERS########
+
+## Installed transmissionrpc & transmission with cmdline and web gui from the tramsmission site
+    deluge:
+      host: 127.0.0.1
+      port: 58846
+      username: admin
+      password: #####
+      path: /incomplete/
+      move_completed_path: /downloads/{{series_name}}/
+      main_file_only: yes
+#    pyload:
+#      api: http://192.168.1.181:8000/api
+#      username: admin
+#      password: password
+#      package: '{{series_name}}/ - {{series_id}}'
+
+########
+#    transmission:
+#      host: 192.168.1.181
+#      port: 9091
+      #username: admin
+      #password: #######
+#      path: /downloads/{{series_name}}/
+#      main_file_only: yes
+#      skip_files:
+#        - '*.nfo'
+#        - '*.sfv'
+#        - '*[sS]ample*'
+#        - '*.txt'
+
+#    utorrent:
+#      url: http://192.168.1.2:8080/gui/
+#      username: admin
+#      password: ######
+#      path: \\Public\TV SHOWS\{{series_name}}\
+
+############################
+
+    torrent_alive:
+      min_seeds: 10
+      reject_for: 1 minutes
+
+
+    retry_failed:
+      retry_time: 2 minutes
+      retry_time_multiplier: 2
+      max_retries: 5
+
+    notify:
+      entries:
+        title: "Flexget"
+        message: "I've just downloaded {{series_name}}/ --- {{title}}"
+        via:
+          - telegram:
+              bot_token: "##########"
+              parse_mode: markdown
+              recipients:
+                - username: "#######"
+
+    add_trackers:
+      - udp://62.138.0.158:6969/announce
+      - udp://188.241.58.209:6969/announce
+      - udp://185.225.17.100:1337/announce
+      - udp://62.210.79.110:1337/announce
+      - udp://151.80.120.114:2710/announce
+      - udp://208.83.20.20:6969/announce
+      - udp://176.113.68.67:8080/announce
+      - udp://184.105.151.164:6969/announce
+      - udp://176.113.68.66:6961/announce
+      - http://176.113.71.19:6961/announce
+      - udp://51.15.40.114:80/announce
+      - udp://91.216.110.52:451/announce
+      - udp://5.206.28.90:6969/announce
+      - udp://176.31.106.35:80/announce
+      - udp://188.246.227.212:80/announce
+      - udp://5.2.79.219:1337/announce
+      - udp://5.2.79.22:6969/announce
+      - udp://95.211.168.204:2710/announce
+      - udp://95.211.168.204:2710/announce
+      - udp://210.244.71.25:6969/announce
+
+
+#Attempt at getting flexget to move downloaded movies from subfolders into the main folder
+  sort-tvseries:
+    filesystem:
+      path: /downloads/{{series_name}}/{{title}}
+      regexp: '.*\.(mkv|mp4)$'
+      recursive: yes
+    seen: local
+    template: TV_Series
+    series:
+      settings:
+        My Group:
+          parse_only: yes
+    regexp:
+      reject:
+        - sample
+    require_field: series_name
+    accept_all: yes
+    move:
+      to: /downloads/{{series_name}}/
+      rename: '{{series_name}} - S{{series_season|pad(2)}}E{{series_episode|pad(2)}}'
+      clean_source: 40
+
+tasks:
+  EZRSS1:
+    rss: http://eztv.io/ezrss.xml
+    priority: 1
+    template:
+      - TV_Series
+
+#  IPTOR:
+#    rss: https://iptorrents.com/t.rss?u=#####;tp=#########;78;23;24;25;65;79;22;5;99;4;download;free
+#    priority: 2
+#    template:
+#      - TV_Series
+
+  SHOWRSS:
+    rss: http://showrss.info/user/######.rss?magnets=true&namespaces=true&name=null&quality=null&re=null
+    priority: 2
+    template:
+      - TV_Series
+
+#  KAT:
+#    rss: http://kat.ph/tv/?rss=1
+#    priority: 2
+#    template:
+#      - TV_Series
+
+
+  THE-PIRATE:
+    rss: https://thepiratebay.org/rss/top100/208
+    priority: 3
+    template:
+      - TV_Series
+
+  THE-PIRATE2:
+    rss: https://thepiratebay.org/rss//top100/200
+    priority: 4
+    template:
+      - TV_Series
+
+  KICKASS:
+    rss: http://kickasstorrents.to/tv/?rss=1
+    priority: 5
+    template:
+      - TV_Series
+
+  TORRENTFUNK:
+    rss: https://www.torlock.com/television/rss.xml
+    priority: 6
+    template:
+      - TV_Series
+
+#  TORRENTZ:
+#    rss: https://rarbg.to/rssdd.php?45852621=
+#    priority: 9
+#    template:
+#      - TV_Series
+
+  RARBG:
+    rss: https://rarbg.to/rssdd.php?category=41
+    priority: 7
+    template:
+      - TV_Series
+
+  ETTV:
+    rss: https://www.ettv.tv/rss.php?cat=59,60,61,69
+    priority: 8
+    template:
+      - TV_Series
+
+  WORLDWIDE:
+    rss: https://worldwidetorrents.me/rss.php
+    priority: 9
+    template:
+      - TV_Series
+
+#  OLDPIRATE:
+#    rss: http://rss.oldpiratebay.se/205
+#    priority: 10
+#    template:
+#      - TV_Series
+
+  LIMETORRENT:
+    rss: https://www.limetorrents.cc/rss/20/
+    priority: 10
+    template:
+      - TV_Series
+
+#web_server: yes

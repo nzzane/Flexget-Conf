@@ -1,0 +1,110 @@
+series:
+  settings:
+    My Group:
+      upgrade: yes
+      tracking: backfill
+      season_packs: 2
+      quality:
+        720p+
+        webrip+
+        720p+ webrip+
+        h264
+
+
+
+
+  My Group:
+  - American Dad:
+      begin: S15E01
+  - Archer:
+      begin: S10E01
+  - Below Deck:
+      begin: S07E01
+  - Below Deck Mediterranean:
+      begin: S03E01
+  - Bobs Burgers:
+      begin: S08E15
+  - Brooklyn Nine-Nine:
+      begin: S05E01
+  - Catch 22:
+      begin: S02E01
+#  - Celebrities on the NHS frontline:
+#      begin: S01E01
+#  - Chernobyl:
+#      begin: S01E01
+#  - Confessions of a junior doctor:
+#      begin: S01E01
+  - Derry Girls:
+      begin: S03E01
+#  - Doctor Who 2005:
+#      begin: S011E01
+  - Emergence:
+      begin: S01E01
+  - Family Guy:
+      begin: S16E20
+  - God Friended Me:
+      begin: S01E01
+#  - Gold Rush:
+#      begin: S08E23
+#  - Gordon Ramsays 24 Hours to Hell and Back:
+#      begin: S01E01
+#  - Inside the Operating Theatre:
+#      begin: S01E01
+  - Lego Masters US:
+      begin: S01E01
+  - Lego Masters AU:
+      begin: S01E01
+  - Making It:
+      begin: S01E01
+#  - Mars:
+#      begin: S01E01
+#  - Masterchef Australia:
+#      begin: S11E01
+#  - Once Upon a Time:
+#      begin: S08E01
+  - Rick and Morty:
+      begin: S03E01
+  - Savage Builds:
+      begin: S01E01
+#  - Scorpion:
+#      begin: S01E01
+  - See:
+      begin: S01E01
+  - South Park:
+      begin: S23E01
+  - Star Trek Picard:
+      begin: S01E01
+#  - Stranger Things:
+#      begin: S03E01
+  - The 100:
+      begin: S06E01
+#  - The Big Bang Theory:
+#      begin: S11E01
+#  - The Good Doctor:
+#      begin: S01E01
+  - The Boys:
+      begin: S01E01
+  - The Grand Tour:
+      begin: S02E01
+  - The Mandalorian:
+      begin: S01E01
+  - The Orville:
+      begin: S01E01
+  - The Simpsons:
+      begin: S29E20
+  - Tom Clancys Jack Ryan:
+      begin: S02E01
+#  - Untold Stories of the E.R.:
+#      begin: S12E01
+#  - Vikings:
+#      begin: S05E01
+  - Wellington Paranormal:
+      begin: S01E01
+  - Westworld:
+      begin: S03E01
+#  - Whose Line Is It Anyway:
+#      begin: S10E01
+  - Young Sheldon:
+      begin: S03E01
+#  - 999 on the frontline:
+#      begin: S01E01
